@@ -1,22 +1,20 @@
-from langchain_core.messages import AIMessage
-
-from llm.llm_manager import LLMManager
 from agent.state import AgentState
+from agent.tools import calculator, search_company_policy
+from llm.llm_manager import LLMManager
 
 
-llm = LLMManager()
+llm = LLMManager().get_llm().bind_tools(
+    [
+        calculator,
+        search_company_policy
+    ]
+)
 
 
 def chatbot(state: AgentState):
 
-    response = llm.ask(state["messages"])
-
-    print("\n========== LLM RESPONSE ==========\n")
-    print(response)
-    print("\n==================================\n")
+    response = llm.invoke(state["messages"])
 
     return {
-        "messages": [
-            response
-        ]
+        "messages": [response]
     }

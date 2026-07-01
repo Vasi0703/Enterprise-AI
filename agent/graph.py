@@ -3,7 +3,7 @@ from langgraph.prebuilt import ToolNode, tools_condition
 
 from agent.state import AgentState
 from agent.nodes import chatbot
-from agent.tools import calculator
+from agent.tools import calculator, search_company_policy
 
 
 class AgentGraph:
@@ -17,7 +17,12 @@ class AgentGraph:
 
         graph.add_node(
             "tools",
-            ToolNode([calculator])
+            ToolNode(
+                [
+                    calculator,
+                    search_company_policy
+                ]
+                    )
         )
 
         # Start
