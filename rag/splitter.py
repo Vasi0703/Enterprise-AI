@@ -1,0 +1,20 @@
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+
+
+class DocumentSplitter:
+
+    def __init__(self):
+
+        self.splitter = RecursiveCharacterTextSplitter(
+
+            chunk_size=500,
+
+            chunk_overlap=100
+
+        )
+
+    def split(self, documents):
+
+        chunks = self.splitter.split_documents(documents)
+
+        return chunks
