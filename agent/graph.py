@@ -1,5 +1,6 @@
 from langgraph.graph import StateGraph, START
 from langgraph.prebuilt import ToolNode, tools_condition
+from langgraph.checkpoint.memory import MemorySaver
 
 from agent.state import AgentState
 from agent.nodes import chatbot
@@ -12,7 +13,8 @@ class AgentGraph:
 
         graph = StateGraph(AgentState)
 
-        # Nodes
+        memory = MemorySaver()
+
         graph.add_node("chatbot", chatbot)
 
         graph.add_node(
@@ -22,34 +24,33 @@ class AgentGraph:
                     calculator,
                     search_company_policy
                 ]
-                    )
+            )
         )
 
-        # Start
         graph.add_edge(
             START,
             "chatbot"
         )
 
-        # Dacă LLM cere un tool -> mergem în ToolNode
-        # Dacă nu -> END automat
         graph.add_conditional_edges(
             "chatbot",
             tools_condition
         )
 
-        # După executarea tool-ului revenim la chatbot
         graph.add_edge(
             "tools",
             "chatbot"
         )
 
-        self.graph = graph.compile()
+        self.graph = graph.compile(
+            checkpointer=memory
+        )
 
-    def invoke(self, messages):
+    def invoke(self, messages, config):
 
         return self.graph.invoke(
             {
                 "messages": messages
-            }
+            },
+            config=config
         )
