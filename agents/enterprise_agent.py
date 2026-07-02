@@ -1,26 +1,21 @@
+from agents.supervisor.graph import SupervisorGraph
 from langchain_core.messages import HumanMessage
-
-from agent.graph import AgentGraph
 
 
 class EnterpriseAgent:
 
     def __init__(self):
-
-        self.graph = AgentGraph()
+        self.graph = SupervisorGraph()
 
     def ask(self, question: str):
-
         config = {
             "configurable": {
-                "thread_id": "enterprise-chat"
+                "thread_id": "enterprise-assistant"
             }
         }
 
         response = self.graph.invoke(
-            [
-                HumanMessage(content=question)
-            ],
+            [HumanMessage(content=question)],
             config=config
         )
 

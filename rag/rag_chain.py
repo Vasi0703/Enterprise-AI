@@ -1,41 +1,19 @@
-from typer import prompt
-
 from llm.llm_manager import LLMManager
-
 from utils.logger import logger
+from utils.trace import trace
 
 
 class RAGChain:
 
     def __init__(self, retriever):
-
         self.retriever = retriever
-
         self.llm = LLMManager()
 
     def ask(self, question: str):
-
         logger.info("Searching similar chunks...")
+        trace("RAG")
 
         documents = self.retriever.invoke(question)
-
-        logger.info(f"Retrieved {len(documents)} relevant chunks.")
-
-        print("\n========== RETRIEVED DOCUMENTS ==========\n")
-
-        for i, doc in enumerate(documents):
-
-            print(f"\n----- Chunk {i+1} -----\n")
-
-            print(doc.page_content)
-
-            print("\nMetadata:")
-
-            print(doc.metadata)
-
-            print("\n---------------------------------------")
-
-        print("\n========================================\n")
 
         logger.info(f"Retrieved {len(documents)} relevant chunks.")
 
@@ -61,10 +39,6 @@ Question:
 """
 
         logger.info("Sending prompt to Llama...")
-
-        print("\n========== PROMPT ==========\n")
-        print(prompt)
-        print("\n=============================\n")
 
         response = self.llm.ask(prompt)
 
