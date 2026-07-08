@@ -17,3 +17,5 @@ python-dotenv
 fastapi
 
 uvicorn
+
+langgraph-checkpoint-sqlite

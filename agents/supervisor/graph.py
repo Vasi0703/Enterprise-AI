@@ -1,5 +1,5 @@
 from langgraph.graph import StateGraph, START, END
-from langgraph.checkpoint.memory import MemorySaver
+from memory.checkpointer import Checkpointer
 
 from agents.supervisor.state import SupervisorState
 from agents.supervisor.nodes import (
@@ -15,7 +15,7 @@ class SupervisorGraph:
 
     def __init__(self):
         graph = StateGraph(SupervisorState)
-        memory = MemorySaver()
+        memory = Checkpointer().get()
 
         graph.add_node("router", route_question)
         graph.add_node("hr", hr_node)
