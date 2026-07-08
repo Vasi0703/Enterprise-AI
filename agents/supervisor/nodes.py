@@ -2,6 +2,8 @@ from llm.llm_manager import LLMManager
 
 from prompts.supervisor_prompt import supervisor_prompt
 
+from schemas.route import RouteResponse
+
 from utils.logger import logger
 from utils.trace import trace
 
@@ -12,7 +14,11 @@ from agents.math.graph import MathGraph
 from agents.chat.graph import ChatGraph
 
 
-llm = LLMManager().get_llm()
+llm = (
+    LLMManager()
+    .get_llm()
+    .with_structured_output(RouteResponse)
+)
 
 routing_chain = supervisor_prompt | llm
 
@@ -35,23 +41,9 @@ def route_question(state: SupervisorState):
         }
     )
 
-    logger.info(f"LLM routing response: {response.content}")
+    logger.info(f"Structured Output: {response}")
 
-    route = response.content.strip().lower()
-
-    valid_routes = {
-        "hr",
-        "math",
-        "chat"
-    }
-
-    if route not in valid_routes:
-
-        logger.warning(
-            f"Invalid route '{route}'. Falling back to Chat Agent."
-        )
-
-        route = "chat"
+    route = response.route
 
     logger.info(f"Selected Agent: {route}")
 
